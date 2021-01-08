@@ -1,4 +1,6 @@
-// Define a Dinosaur Constructor.
+/**
+ * @description This Constructor defines a Dinosaur object and it's methods
+ */
 function Dinosaur(species, weight, height, diet, where, when, fact) {
   this.species = species;
   this.weight = weight;
@@ -8,6 +10,22 @@ function Dinosaur(species, weight, height, diet, where, when, fact) {
   this.when = when;
   this.fact = fact;
   this.image = 'images/' + species.toLowerCase() + '.png';
+
+  // create a method that returns a random fact based off of: weight, height, diet, where, when and fact
+  this.generateFact = function () {
+    let facts = [
+      this.height,
+      this.weight,
+      this.diet,
+      this.where,
+      this.when,
+      this.fact,
+    ];
+
+    let randomFact = facts[Math.floor(Math.random() * facts.length)];
+    // Return a random item when runction is called
+    return randomFact;
+  };
 }
 
 // Define a Human Object
@@ -39,7 +57,7 @@ fetch('dino.json')
 function makeHumanSubject() {
   let humanName = document.getElementById('name').value;
 
-  // convert values from string to integer
+  // get values and convert from string to integer
   let heightInFeet = parseInt(document.getElementById('feet').value);
   let heightInInches = parseInt(document.getElementById('inches').value);
   let humanWeight = parseInt(document.getElementById('weight').value);
@@ -52,7 +70,6 @@ function makeHumanSubject() {
 }
 
 // Create Dino Compare Method 1
-// NOTE: Weight in JSON file is in lbs, height in inches.
 
 // Create Dino Compare Method 2
 // NOTE: Weight in JSON file is in lbs, height in inches.
@@ -61,9 +78,9 @@ function makeHumanSubject() {
 // NOTE: Weight in JSON file is in lbs, height in inches.
 
 /**
- * @description This utility function will take parameters from the Dino-Object call and generate all necessary DOM elements.
- **/
-function getDisplayInformation(species, url) {
+ * @description This function will take parameters from createDisplay and prepare all necessary DOM elements.
+ */
+function getDisplayInformation(species, url, fact) {
   let dinoDiv = document.createElement('div');
   // Add grid-item class to each div
   dinoDiv.className = 'grid-item';
@@ -78,6 +95,11 @@ function getDisplayInformation(species, url) {
   imageTag.src = url;
   dinoDiv.appendChild(imageTag);
 
+  //include a random fact
+  let factTag = document.createElement('p');
+  factTag.innerText = fact;
+  dinoDiv.appendChild(factTag);
+
   return dinoDiv;
 }
 
@@ -87,8 +109,8 @@ function getDisplayInformation(species, url) {
 function createDisplay() {
   for (let dinosaur in arrayOfDinosaurs) {
     let dino = arrayOfDinosaurs[dinosaur];
-
-    let gridItems = getDisplayInformation(dino.species, dino.image);
+    let getFact = dino.generateFact();
+    let gridItems = getDisplayInformation(dino.species, dino.image, getFact);
 
     document.getElementById('grid').appendChild(gridItems);
   }
