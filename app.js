@@ -15,13 +15,13 @@ function Human(name, height, weight) {
   (this.name = name), (this.height = height), (this.weight = weight);
 }
 
-// Create Dinosaur Objects from JSON data.
-let arrayOfSubjects = [];
+// Create Dinosaur Objects from JSON data - using Fetch.
+let arrayOfDinosaurs = [];
 
 fetch('dino.json')
   .then((res) => res.json())
   .then((data) => {
-    arrayOfSubjects = data.Dinos.map(
+    arrayOfDinosaurs = data.Dinos.map(
       (dino) =>
         new Dinosaur(
           dino.species,
@@ -60,18 +60,55 @@ function makeHumanSubject() {
 // Create Dino Compare Method 3
 // NOTE: Weight in JSON file is in lbs, height in inches.
 
-// Generate Tiles for each Dino in Array
+/**
+ * @description This utility function will take parameters from the Dino-Object call and generate all necessary DOM elements.
+ **/
+function getDisplayInformation(species, url) {
+  let dinoDiv = document.createElement('div');
+  // Add grid-item class to each div
+  dinoDiv.className = 'grid-item';
 
-// Add tiles to DOM
+  // include Species to H3 tag
+  let dinoSpecies = document.createElement('h3');
+  dinoSpecies.innerText = species;
+  dinoDiv.appendChild(dinoSpecies);
 
-// Remove form from screen
+  // include Image
+  let imageTag = document.createElement('img');
+  imageTag.src = url;
+  dinoDiv.appendChild(imageTag);
 
-// The main function of the application should take the user input, create a new Human object and call all the comparison functions. This program should only be run when the button is clicked
+  return dinoDiv;
+}
+
+/**
+ * @description This function builds the display to the DOM
+ */
+function createDisplay() {
+  for (let dinosaur in arrayOfDinosaurs) {
+    let dino = arrayOfDinosaurs[dinosaur];
+
+    let gridItems = getDisplayInformation(dino.species, dino.image);
+
+    document.getElementById('grid').appendChild(gridItems);
+  }
+}
+
+/**
+ * @description The main function of the application: should take the user input, create a new Human object and call all the comparison functions. This program should only be run when the button is clicked
+ */
+
 function programRun(e) {
   e.preventDefault();
 
+  // Store human data
   const humanSubject = makeHumanSubject();
-  console.log(arrayOfSubjects);
+
+  // Remove the form from the DOM
+  document.getElementById('dino-compare').classList.add('hidden');
+
+  // Call tile generation function
+  createDisplay();
 }
 
 // On button click, run the main function and prepare and display infographic
