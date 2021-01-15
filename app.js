@@ -3,9 +3,9 @@
  */
 function Dinosaur(species, weight, height, diet, where, when, fact) {
   this.species = species;
-  this.weight = weight;
+  this.weight = `I weighed about ${weight} pounds!`;
   this.height = height;
-  this.diet = diet;
+  this.diet = `I am a ${diet}`;
   this.where = where;
   this.when = when;
   this.fact = fact;
@@ -23,14 +23,17 @@ function Dinosaur(species, weight, height, diet, where, when, fact) {
     ];
 
     let randomFact = facts[Math.floor(Math.random() * facts.length)];
-    // Return a random item when runction is called
+    // Return a random item when function is called
     return randomFact;
   };
 }
 
 // Define a Human Object
 function Human(name, height, weight) {
-  (this.name = name), (this.height = height), (this.weight = weight);
+  (this.name = name),
+    (this.height = height),
+    (this.weight = weight),
+    (this.image = 'images/human.png');
 }
 
 // Create Dinosaur Objects from JSON data - using Fetch.
@@ -53,8 +56,10 @@ fetch('dino.json')
     );
   });
 
-// Define a function to collect Human Data and return a new Human Object
-function makeHumanSubject() {
+/**
+ *@description This function will collection Human data and return a new Human Object
+ */
+function getHumanData() {
   let humanName = document.getElementById('name').value;
 
   // get values and convert from string to integer
@@ -69,6 +74,9 @@ function makeHumanSubject() {
   return new Human(humanName, humanHeight, humanWeight);
 }
 
+/**
+ *@description This function will take Human Data and append to the dom as necessary.
+ */
 // Create Dino Compare Method 1
 
 // Create Dino Compare Method 2
@@ -104,36 +112,41 @@ function getDisplayInformation(species, url, fact) {
 }
 
 /**
- * @description This function builds the display to the DOM
+ * @description This function builds the display to the DOM. Gets information for both Dinos and Humans.
  */
-function createDisplay() {
-  for (let dinosaur in arrayOfDinosaurs) {
-    let dino = arrayOfDinosaurs[dinosaur];
-    let getFact = dino.generateFact();
-    let gridItems = getDisplayInformation(dino.species, dino.image, getFact);
+function createDisplay(subject) {
+  // should take the dinosaur data and add the human data, but make sure the human is at index 4 so it appears in the center...
+  let displayArray = arrayOfDinosaurs;
+  displayArray.splice(4, 0, subject);
 
-    document.getElementById('grid').appendChild(gridItems);
-  }
+  console.log(displayArray);
+  // for (let dinosaur in arrayOfDinosaurs) {
+  //   let dino = arrayOfDinosaurs[dinosaur];
+  //   let getFact = dino.generateFact();
+  //   let gridItems = getDisplayInformation(dino.species, dino.image, getFact);
+
+  //   document.getElementById('grid').appendChild(gridItems);
+  // }
 }
 
 /**
- * @description The main function of the application: should take the user input, create a new Human object and call all the comparison functions. This program should only be run when the button is clicked
+ * @description The main function of the application: should take the user input, create a new Human object and call all the comparison functions. This program should only be run when the button is clicked.
  */
 
 function programRun(e) {
   e.preventDefault();
 
-  // Store human data
-  const humanSubject = makeHumanSubject();
+  // Collect Human Data
+  const humanSubject = getHumanData();
 
   // Remove the form from the DOM
   document.getElementById('dino-compare').classList.add('hidden');
 
   // Call tile generation function
-  createDisplay();
+  createDisplay(humanSubject);
 }
 
-// On button click, run the main function and prepare and display infographic
+// IIFE: On button click, run the main function and prepare and display infographic
 (function () {
   document.getElementById('btn').addEventListener('click', programRun);
 })();
