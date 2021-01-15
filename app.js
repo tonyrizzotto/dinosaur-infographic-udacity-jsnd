@@ -88,7 +88,7 @@ function getHumanData() {
 /**
  * @description This function will take parameters from createDisplay and prepare all necessary DOM elements.
  */
-function getDisplayInformation(species, url, fact) {
+function prepareDinoDisplay(species, url, fact) {
   let dinoDiv = document.createElement('div');
   // Add grid-item class to each div
   dinoDiv.className = 'grid-item';
@@ -115,11 +115,41 @@ function getDisplayInformation(species, url, fact) {
  * @description This function builds the display to the DOM. Gets information for both Dinos and Humans.
  */
 function createDisplay(subject) {
-  // should take the dinosaur data and add the human data, but make sure the human is at index 4 so it appears in the center...
+  // should take the dinosaur data and add the human data to index 4
   let displayArray = arrayOfDinosaurs;
   displayArray.splice(4, 0, subject);
 
-  console.log(displayArray);
+  for (let object in displayArray) {
+    let subject = displayArray[object];
+    if (!subject.species) {
+      // append human info to display
+      let humanDiv = document.createElement('div');
+      humanDiv.className = 'grid-item';
+
+      let humanHeader = document.createElement('h3');
+      humanHeader.innerText = 'Human';
+      humanDiv.appendChild(humanHeader);
+
+      let humanImage = document.createElement('img');
+      humanImage.src = '/images/human.png';
+      humanDiv.appendChild(humanImage);
+
+      let humanName = document.createElement('p');
+      humanName.innerText = subject.name;
+      humanDiv.appendChild(humanName);
+
+      document.getElementById('grid').appendChild(humanDiv);
+    } else {
+      // This will prepare the dinosaur display
+      let getFact = subject.generateFact();
+      let gridItems = prepareDinoDisplay(
+        subject.species,
+        subject.image,
+        getFact
+      );
+      document.getElementById('grid').appendChild(gridItems);
+    }
+  }
   // for (let dinosaur in arrayOfDinosaurs) {
   //   let dino = arrayOfDinosaurs[dinosaur];
   //   let getFact = dino.generateFact();
