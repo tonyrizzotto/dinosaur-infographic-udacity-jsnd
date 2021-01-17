@@ -22,9 +22,7 @@ function Dinosaur(species, weight, height, diet, where, when, fact) {
       this.fact,
     ];
 
-    let randomFact = facts[Math.floor(Math.random() * facts.length)];
-    // Return a random item when function is called
-    return randomFact;
+    return facts;
   };
 }
 
@@ -57,7 +55,7 @@ fetch('dino.json')
   });
 
 /**
- *@description This function will collection Human data and return a new Human Object
+ *@description This function will collect Human data from the input form and return a new Human Object
  */
 function getHumanData() {
   let humanName = document.getElementById('name').value;
@@ -74,16 +72,32 @@ function getHumanData() {
   return new Human(humanName, humanHeight, humanWeight);
 }
 
+// Create Dino Compare Method 1 -
 /**
- *@description This function will take Human Data and append to the dom as necessary.
+ *@description This function compares a Humans weight to that of a dinosaur. If getRandomFact returns weight this function will be called.
  */
-// Create Dino Compare Method 1
+function compareWeight(dinoObject, humanObject) {
+  console.log(dinoObject);
+  //compare humans weight to dino's weight
+  // if (humanObject.weight > dinoObject.weight) {
+  //   return `WOW! You weigh more than a ${dinoObject.species}`;
+  // }
+}
 
 // Create Dino Compare Method 2
 // NOTE: Weight in JSON file is in lbs, height in inches.
 
 // Create Dino Compare Method 3
 // NOTE: Weight in JSON file is in lbs, height in inches.
+
+/**
+ * @description Takes a array of items and returns a random one.
+ */
+function generateRandomFact(array) {
+  let randomFact = array[Math.floor(Math.random() * array.length)];
+
+  console.log(randomFact);
+}
 
 /**
  * @description This function will take parameters from createDisplay and prepare all necessary DOM elements.
@@ -119,8 +133,10 @@ function createDisplay(subject) {
   let displayArray = arrayOfDinosaurs;
   displayArray.splice(4, 0, subject);
 
-  for (let object in displayArray) {
-    let subject = displayArray[object];
+  for (let index in displayArray) {
+    let subject = displayArray[index];
+
+    //check for human data
     if (!subject.species) {
       // append human info to display
       let humanDiv = document.createElement('div');
@@ -140,23 +156,22 @@ function createDisplay(subject) {
 
       document.getElementById('grid').appendChild(humanDiv);
     } else {
-      // This will prepare the dinosaur display
-      let getFact = subject.generateFact();
-      let gridItems = prepareDinoDisplay(
-        subject.species,
-        subject.image,
-        getFact
-      );
-      document.getElementById('grid').appendChild(gridItems);
+    }
+    if (subject.species !== 'Pigeon' && subject instanceof Dinosaur) {
+      const facts = JSON.stringify(subject.fact);
+      console.log(facts);
+    } else if (subject.species === 'Pigeon') {
+      console.log(subject.fact);
+      // This will prepare the dinosaur display after running compare functions
+      //let getFact = subject.generateFact();
+      // let gridItems = prepareDinoDisplay(
+      //   subject.species,
+      //   subject.image,
+      //   getFact
+      // );
+      // document.getElementById('grid').appendChild(gridItems);
     }
   }
-  // for (let dinosaur in arrayOfDinosaurs) {
-  //   let dino = arrayOfDinosaurs[dinosaur];
-  //   let getFact = dino.generateFact();
-  //   let gridItems = getDisplayInformation(dino.species, dino.image, getFact);
-
-  //   document.getElementById('grid').appendChild(gridItems);
-  // }
 }
 
 /**
