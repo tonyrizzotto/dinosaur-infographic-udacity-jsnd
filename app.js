@@ -1,37 +1,26 @@
 /**
- * @description This Constructor defines a Dinosaur object and it's methods
+ * @description This Constructor defines a Dinosaur object
  */
 function Dinosaur(species, weight, height, diet, where, when, fact) {
   this.species = species;
-  this.weight = `I weighed about ${weight} pounds!`;
+  this.weight = weight;
   this.height = height;
-  this.diet = `I am a ${diet}`;
+  this.diet = diet;
   this.where = where;
   this.when = when;
   this.fact = fact;
   this.image = 'images/' + species.toLowerCase() + '.png';
-
-  // create a method that returns a random fact based off of: weight, height, diet, where, when and fact
-  this.generateFact = function () {
-    let facts = [
-      this.height,
-      this.weight,
-      this.diet,
-      this.where,
-      this.when,
-      this.fact,
-    ];
-
-    return facts;
-  };
 }
 
-// Define a Human Object
-function Human(name, height, weight) {
+/**
+ * @description This Constructor defines a Human Object
+ */
+function Human(name, height, weight, diet) {
   (this.name = name),
     (this.height = height),
     (this.weight = weight),
-    (this.image = 'images/human.png');
+    (this.diet = diet);
+  this.image = 'images/human.png';
 }
 
 // Create Dinosaur Objects from JSON data - using Fetch.
@@ -58,45 +47,70 @@ fetch('dino.json')
  *@description This function will collect Human data from the input form and return a new Human Object
  */
 function getHumanData() {
-  let humanName = document.getElementById('name').value;
+  const humanName = document.getElementById('name').value;
 
-  // get values and convert from string to integer
-  let heightInFeet = parseInt(document.getElementById('feet').value);
-  let heightInInches = parseInt(document.getElementById('inches').value);
-  let humanWeight = parseInt(document.getElementById('weight').value);
+  const humanHeight =
+    Number(document.getElementById('inches').value) +
+    Number(document.getElementById('feet').value) * 12;
 
-  //Convert height to inches
-  let humanHeight = heightInFeet * 12 + heightInInches;
+  const humanWeight = Number(document.getElementById('weight').value);
+
+  const humanDiet = document.getElementById('diet').value.toLowerCase();
 
   // return a new Human Object
-  return new Human(humanName, humanHeight, humanWeight);
+  return new Human(humanName, humanHeight, humanWeight, humanDiet);
 }
 
 // Create Dino Compare Method 1 -
 /**
  *@description This function compares a Humans weight to that of a dinosaur. If getRandomFact returns weight this function will be called.
  */
-function compareWeight(dinoObject, humanObject) {
-  console.log(dinoObject);
+function compareWeight(dinosaur) {
+  // get human weight from object
+  const humanWeight = Number(getHumanData().weight);
+  const timesHeavier = Math.round(dinosaur.weight / humanWeight);
+
   //compare humans weight to dino's weight
-  // if (humanObject.weight > dinoObject.weight) {
-  //   return `WOW! You weigh more than a ${dinoObject.species}`;
-  // }
+  if (humanWeight > dinosaur.weight) {
+    return `WOW! You weigh more than a ${dinosaur.species}`;
+  } else if (humanWeight < dinosaur.weight) {
+    return `${dinosaur.species} was ${timesHeavier} times heavier than you!`;
+  } else {
+    return `Amazing! Somehow you and ${dinosaur.species} are the same height!`;
+  }
 }
 
-// Create Dino Compare Method 2
-// NOTE: Weight in JSON file is in lbs, height in inches.
+/**
+ * @description This function compares a Humans height with that of the dinosaur Object.
+ */
+function compareHeight(dinosaur) {
+  // get human height from object
+  const getHumanHeight = getHumanData().height;
 
-// Create Dino Compare Method 3
-// NOTE: Weight in JSON file is in lbs, height in inches.
+  // give an approximation of difference
+  const heightDifference = Math.floor((dinosaur.height - getHumanHeight) / 12);
+
+  if (dinosaur.height > getHumanHeight) {
+    return `${dinosaur.species} was ${heightDifference} times taller than you!`;
+  } else if (dinosaur.height < getHumanHeight) {
+    return `You are taller than a ${dinosaur.species}`;
+  } else {
+    return `Amazing! You and ${dinosaur.species} are the same height!`;
+  }
+}
 
 /**
- * @description Takes a array of items and returns a random one.
+ * @description This function compares a Humans selected diet with that of the dinosaur Object.
  */
-function generateRandomFact(array) {
-  let randomFact = array[Math.floor(Math.random() * array.length)];
+function compareDiet(dinosaur) {
+  // get human diet from object
+  const getHumanDiet = getHumanData().humanDiet;
 
-  console.log(randomFact);
+  if (dinosaur.diet === getHumanDiet) {
+    return `${dinosaur.species} had a ${dinosaur.diet} diet, just like you`;
+  } else {
+    return `${dinosaur.species} had a ${dinosaur.diet} diet.`;
+  }
 }
 
 /**
@@ -135,7 +149,13 @@ function createDisplay(subject) {
 
   for (let index in displayArray) {
     let subject = displayArray[index];
-
+    //Run comparisions and generate a fact array
+    const factsArray = [
+      subject.fact,
+      compareWeight(subject),
+      compareHeight(subject),
+      compareDiet(subject),
+    ];
     //check for human data
     if (!subject.species) {
       // append human info to display
@@ -156,20 +176,17 @@ function createDisplay(subject) {
 
       document.getElementById('grid').appendChild(humanDiv);
     } else {
-    }
-    if (subject.species !== 'Pigeon' && subject instanceof Dinosaur) {
-      const facts = JSON.stringify(subject.fact);
-      console.log(facts);
-    } else if (subject.species === 'Pigeon') {
-      console.log(subject.fact);
-      // This will prepare the dinosaur display after running compare functions
-      //let getFact = subject.generateFact();
-      // let gridItems = prepareDinoDisplay(
-      //   subject.species,
-      //   subject.image,
-      //   getFact
-      // );
-      // document.getElementById('grid').appendChild(gridItems);
+      let getFact = factsArray[Math.floor(Math.random() * factsArray.length)];
+      // Check for Pigeon Species
+      if (subject.species === 'Pigeon') {
+        let getFact = subject.fact;
+      }
+      let gridItems = prepareDinoDisplay(
+        subject.species,
+        subject.image,
+        getFact
+      );
+      document.getElementById('grid').appendChild(gridItems);
     }
   }
 }
