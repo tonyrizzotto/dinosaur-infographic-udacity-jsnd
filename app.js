@@ -178,8 +178,8 @@ function createDisplay(subject) {
     } else {
       let getFact = factsArray[Math.floor(Math.random() * factsArray.length)];
       // Check for Pigeon Species
-      if (subject.species === 'Pigeon') {
-        let getFact = subject.fact;
+      if (subject.species === 'Pigeon' && subject instanceof Dinosaur) {
+        getFact = subject.fact;
       }
       let gridItems = prepareDinoDisplay(
         subject.species,
@@ -189,8 +189,17 @@ function createDisplay(subject) {
       document.getElementById('grid').appendChild(gridItems);
     }
   }
+  const resetBtn = document.getElementById('reset-btn');
+  resetBtn.style.display = 'inline-block';
 }
 
+function appReset() {
+  document.getElementById('grid').innerHTML = '';
+  document.getElementById('reset-btn').style.display = 'none';
+  document.getElementById('dino-compare').classList.remove('hidden');
+  document.getElementById('dino-compare').reset();
+  arrayOfDinosaurs.splice(4, 1);
+}
 /**
  * @description The main function of the application: should take the user input, create a new Human object and call all the comparison functions. This program should only be run when the button is clicked.
  */
@@ -211,4 +220,5 @@ function programRun(e) {
 // IIFE: On button click, run the main function and prepare and display infographic
 (function () {
   document.getElementById('btn').addEventListener('click', programRun);
+  document.getElementById('reset-btn').addEventListener('click', appReset);
 })();
