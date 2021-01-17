@@ -167,7 +167,7 @@ function createDisplay(subject) {
       humanDiv.appendChild(humanHeader);
 
       let humanImage = document.createElement('img');
-      humanImage.src = '/images/human.png';
+      humanImage.src = subject.image;
       humanDiv.appendChild(humanImage);
 
       let humanName = document.createElement('p');
